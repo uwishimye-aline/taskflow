@@ -1,0 +1,460 @@
+    /* =====================
+       BASIC RESET & FONTS
+    ===================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f3f4f6;
+      color: #1f2937;
+    }
+
+    /* Dark mode colors — applied to <body> when dark */
+    body.dark {
+      background-color: #111827;
+      color: #f9fafb;
+    }
+
+    /* =====================
+       TOP NAVIGATION BAR
+    ===================== */
+    .navbar {
+      background-color: #4f46e5;
+      color: white;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    body.dark .navbar {
+      background-color: #1e1b4b;
+    }
+
+    .navbar h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .navbar .nav-right {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    /* =====================
+       BUTTONS
+    ===================== */
+    button {
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.85rem;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.85;
+    }
+
+    .btn-primary {
+      background-color: white;
+      color: #4f46e5;
+    }
+
+    .btn-theme {
+      background-color: transparent;
+      color: white;
+      border: 2px solid white;
+      font-size: 1rem;
+      padding: 6px 12px;
+    }
+
+    /* =====================
+       SEARCH BAR
+    ===================== */
+    .search-area {
+      padding: 20px 24px 0;
+    }
+
+    .search-area input {
+      width: 100%;
+      max-width: 400px;
+      padding: 10px 16px;
+      border: 2px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: 'Poppins', sans-serif;
+      background: white;
+      color: #1f2937;
+    }
+
+    body.dark .search-area input {
+      background: #1f2937;
+      border-color: #374151;
+      color: #f9fafb;
+    }
+
+    /* =====================
+       ANALYTICS STRIP
+    ===================== */
+    .analytics {
+      display: flex;
+      gap: 16px;
+      padding: 20px 24px;
+      flex-wrap: wrap;
+    }
+
+    .stat-box {
+      background: white;
+      border-radius: 10px;
+      padding: 16px 24px;
+      text-align: center;
+      min-width: 120px;
+      border-left: 4px solid #4f46e5;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    body.dark .stat-box {
+      background: #1f2937;
+    }
+
+    .stat-box .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #4f46e5;
+    }
+
+    .stat-box .stat-label {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 2px;
+    }
+
+    /* Progress bar */
+    .progress-wrap {
+      padding: 0 24px 20px;
+    }
+
+    .progress-wrap p {
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: #6b7280;
+    }
+
+    .progress-bar {
+      background: #e5e7eb;
+      border-radius: 999px;
+      height: 10px;
+    }
+
+    body.dark .progress-bar {
+      background: #374151;
+    }
+
+    .progress-fill {
+      background: #4f46e5;
+      height: 10px;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.4s ease;
+    }
+
+    /* =====================
+       FILTER BUTTONS
+    ===================== */
+    .filters {
+      padding: 0 24px 16px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: #e5e7eb;
+      color: #374151;
+      padding: 6px 16px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+    }
+
+    body.dark .filter-btn {
+      background: #374151;
+      color: #d1d5db;
+    }
+
+    .filter-btn.active {
+      background: #4f46e5;
+      color: white;
+    }
+
+    /* =====================
+       KANBAN BOARD (3 columns)
+    ===================== */
+    .board {
+      display: flex;
+      gap: 16px;
+      padding: 0 24px 40px;
+      align-items: flex-start;
+      overflow-x: auto;
+    }
+
+    .column {
+      background: white;
+      border-radius: 12px;
+      flex: 1;
+      min-width: 260px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    body.dark .column {
+      background: #1f2937;
+    }
+
+    /* Column top header strip */
+    .col-header {
+      padding: 14px 16px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .col-todo   .col-header { background: #ede9fe; color: #4f46e5; }
+    .col-prog   .col-header { background: #fef3c7; color: #d97706; }
+    .col-done   .col-header { background: #d1fae5; color: #059669; }
+
+    body.dark .col-todo .col-header { background: #3730a3; color: #c7d2fe; }
+    body.dark .col-prog .col-header { background: #78350f; color: #fde68a; }
+    body.dark .col-done .col-header { background: #064e3b; color: #6ee7b7; }
+
+    .col-header .col-count {
+      background: rgba(0,0,0,0.1);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+    }
+
+    /* The area where task cards sit */
+    .task-list {
+      padding: 12px;
+      min-height: 80px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* Drop highlight */
+    .task-list.drag-over {
+      background: #f0f0ff;
+      border-radius: 0 0 12px 12px;
+    }
+
+    body.dark .task-list.drag-over {
+      background: #2d2d5e;
+    }
+
+    /* =====================
+       TASK CARDS
+    ===================== */
+    .task-card {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: grab;
+    }
+
+    body.dark .task-card {
+      background: #111827;
+      border-color: #374151;
+    }
+
+    .task-card:hover {
+      border-color: #4f46e5;
+    }
+
+    .task-card .task-title {
+      font-weight: 600;
+      font-size: 0.88rem;
+      margin-bottom: 4px;
+    }
+
+    .task-card .task-desc {
+      font-size: 0.78rem;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    /* Bottom row: priority tag + date + action buttons */
+    .task-card .task-footer {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .priority-tag {
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .p-high   { background: #fee2e2; color: #dc2626; }
+    .p-medium { background: #fef3c7; color: #d97706; }
+    .p-low    { background: #d1fae5; color: #059669; }
+
+    .task-date {
+      font-size: 0.72rem;
+      color: #9ca3af;
+      margin-left: auto;
+    }
+
+    .task-edit-btn, .task-del-btn {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .task-edit-btn { background: #e0e7ff; color: #4f46e5; }
+    .task-del-btn  { background: #fee2e2; color: #dc2626; }
+
+    /* Empty column message */
+    .empty-msg {
+      text-align: center;
+      color: #9ca3af;
+      font-size: 0.8rem;
+      padding: 20px 0;
+    }
+
+    /* =====================
+       ADD TASK MODAL (popup)
+    ===================== */
+    /* Dark background behind modal */
+    .modal-bg {
+      display: none; /* hidden by default */
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Show modal */
+    .modal-bg.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 14px;
+      padding: 28px;
+      width: 420px;
+      max-width: 95vw;
+    }
+
+    body.dark .modal-box {
+      background: #1f2937;
+    }
+
+    .modal-box h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .modal-box label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #6b7280;
+      margin-bottom: 4px;
+      margin-top: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-box input,
+    .modal-box textarea,
+    .modal-box select {
+      width: 100%;
+      padding: 9px 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 8px;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.88rem;
+      background: white;
+      color: #1f2937;
+    }
+
+    body.dark .modal-box input,
+    body.dark .modal-box textarea,
+    body.dark .modal-box select {
+      background: #111827;
+      border-color: #374151;
+      color: #f9fafb;
+    }
+
+    .modal-box textarea {
+      resize: vertical;
+      min-height: 70px;
+    }
+
+    .modal-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-cancel-modal {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-save-modal {
+      background: #4f46e5;
+      color: white;
+    }
+
+    /* =====================
+       TOAST NOTIFICATION
+    ===================== */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1f2937;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .toast.show {
+      opacity: 1;
+    }
+  

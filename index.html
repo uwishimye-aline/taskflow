@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TaskFlow Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+
+</head>
+<body>
+
+  <!-- =====================
+       TOP NAVBAR
+  ===================== -->
+  <nav class="navbar">
+    <h1>📋 TaskFlow</h1>
+    <div class="nav-right">
+      <button class="btn-theme" onclick="toggleTheme()" id="themeBtn">🌙 Dark</button>
+      <button class="btn-primary" onclick="openModal()">+ Add Task</button>
+    </div>
+  </nav>
+
+  <!-- =====================
+       SEARCH BAR
+  ===================== -->
+  <div class="search-area">
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="🔍  Search tasks by title..."
+      oninput="renderBoard()"
+    />
+  </div>
+
+  <!-- =====================
+       ANALYTICS (stats)
+  ===================== -->
+  <div class="analytics">
+    <div class="stat-box">
+      <div class="stat-number" id="statTotal">0</div>
+      <div class="stat-label">Total Tasks</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="statTodo">0</div>
+      <div class="stat-label">To Do</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="statProg">0</div>
+      <div class="stat-label">In Progress</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-number" id="statDone">0</div>
+      <div class="stat-label">Done</div>
+    </div>
+  </div>
+
+  <!-- Completion progress bar -->
+  <div class="progress-wrap">
+    <p id="progressLabel">Completion: 0%</p>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- =====================
+       FILTER BUTTONS
+  ===================== -->
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+    <button class="filter-btn" onclick="setFilter('high', this)">🔴 High Priority</button>
+    <button class="filter-btn" onclick="setFilter('medium', this)">🟠 Medium Priority</button>
+    <button class="filter-btn" onclick="setFilter('low', this)">🟢 Low Priority</button>
+  </div>
+
+  <!-- =====================
+       KANBAN BOARD
+  ===================== -->
+  <div class="board">
+
+    <!-- Column 1: To Do -->
+    <div class="column col-todo">
+      <div class="col-header">
+        📌 To Do
+        <span class="col-count" id="count-todo">0</span>
+      </div>
+      <div class="task-list" id="list-todo"
+        ondragover="allowDrop(event)"
+        ondrop="dropTask(event, 'todo')"
+        ondragenter="this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')">
+      </div>
+    </div>
+
+    <!-- Column 2: In Progress -->
+    <div class="column col-prog">
+      <div class="col-header">
+        🔄 In Progress
+        <span class="col-count" id="count-inprogress">0</span>
+      </div>
+      <div class="task-list" id="list-inprogress"
+        ondragover="allowDrop(event)"
+        ondrop="dropTask(event, 'inprogress')"
+        ondragenter="this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')">
+      </div>
+    </div>
+
+    <!-- Column 3: Done -->
+    <div class="column col-done">
+      <div class="col-header">
+        ✅ Done
+        <span class="col-count" id="count-done">0</span>
+      </div>
+      <div class="task-list" id="list-done"
+        ondragover="allowDrop(event)"
+        ondrop="dropTask(event, 'done')"
+        ondragenter="this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')">
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =====================
+       ADD / EDIT TASK MODAL
+  ===================== -->
+  <div class="modal-bg" id="modalBg">
+    <div class="modal-box">
+      <h2 id="modalHeading">Add New Task</h2>
+
+      <label>Task Title *</label>
+      <input type="text" id="inputTitle" placeholder="e.g. Design homepage" />
+
+      <label>Description</label>
+      <textarea id="inputDesc" placeholder="Optional details..."></textarea>
+
+      <div class="modal-row">
+        <div>
+          <label>Status</label>
+          <select id="inputStatus">
+            <option value="todo">To Do</option>
+            <option value="inprogress">In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div>
+          <label>Priority</label>
+          <select id="inputPriority">
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+      </div>
+
+      <label>Due Date</label>
+      <input type="date" id="inputDate" />
+
+      <div class="modal-footer">
+        <button class="btn-cancel-modal" onclick="closeModal()">Cancel</button>
+        <button class="btn-save-modal" onclick="saveTask()">Save Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast message -->
+  <div class="toast" id="toast"></div>
+
+
+  <!-- =====================
+       JAVASCRIPT
+  ===================== -->
+  <script>
+
+    // ── 1. DATA ──────────────────────────────────────────
+    // We store all tasks in this array.
+    // Each task is an object with: id, title, desc, status, priority, date
+
+    let tasks = JSON.parse(localStorage.getItem('taskflow') || '[]');
+
+    // If no tasks saved yet, add some sample tasks
+    if (tasks.length === 0) {
+      tasks = [
+        { id: 1, title: 'Design homepage layout', desc: 'Create wireframes and mockups', status: 'done', priority: 'high', date: '2026-06-05' },
+        { id: 2, title: 'Build login page', desc: 'HTML + CSS form with validation', status: 'inprogress', priority: 'high', date: '2026-06-10' },
+        { id: 3, title: 'Write project report', desc: 'Cover all features and testing', status: 'todo', priority: 'medium', date: '2026-06-20' },
+        { id: 4, title: 'Add dark mode', desc: 'Toggle between light and dark theme', status: 'done', priority: 'low', date: '2026-06-07' },
+        { id: 5, title: 'Fix search bug', desc: 'Search not working on mobile', status: 'inprogress', priority: 'medium', date: '2026-06-12' },
+      ];
+      saveTasks();
+    }
+
+    // Keep track of which task we're editing (null = adding new)
+    let editingId = null;
+
+    // Keep track of which task is being dragged
+    let draggingId = null;
+
+    // Current priority filter (default = show all)
+    let currentFilter = 'all';
+
+    // Dark mode state
+    let isDark = false;
+
+
+    // ── 2. SAVE & RENDER ──────────────────────────────────
+    // Save tasks array to localStorage so data stays after refresh
+    function saveTasks() {
+      localStorage.setItem('taskflow', JSON.stringify(tasks));
+    }
+
+    // Draw all task cards on the board
+    function renderBoard() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+
+      // Loop through each column
+      ['todo', 'inprogress', 'done'].forEach(function(col) {
+        const list = document.getElementById('list-' + col);
+
+        // Filter tasks that belong to this column
+        let filtered = tasks.filter(function(t) {
+          // Must match this column
+          if (t.status !== col) return false;
+          // Must match priority filter
+          if (currentFilter !== 'all' && t.priority !== currentFilter) return false;
+          // Must match search text
+          if (search && !t.title.toLowerCase().includes(search)) return false;
+          return true;
+        });
+
+        // Update column count (total in this column, not filtered)
+        const colTotal = tasks.filter(function(t){ return t.status === col; }).length;
+        document.getElementById('count-' + col).textContent = colTotal;
+
+        // Clear the list before redrawing
+        list.innerHTML = '';
+
+        // Show empty message if no tasks
+        if (filtered.length === 0) {
+          list.innerHTML = '<p class="empty-msg">No tasks here</p>';
+          return;
+        }
+
+        // Create a card for each task
+        filtered.forEach(function(task) {
+          const card = document.createElement('div');
+          card.className = 'task-card';
+          card.draggable = true;
+          card.dataset.id = task.id;
+
+          // Build the card HTML
+          card.innerHTML =
+            '<div class="task-title">' + escapeHTML(task.title) + '</div>' +
+            (task.desc ? '<div class="task-desc">' + escapeHTML(task.desc) + '</div>' : '') +
+            '<div class="task-footer">' +
+              '<span class="priority-tag p-' + task.priority + '">' + task.priority.toUpperCase() + '</span>' +
+              (task.date ? '<span class="task-date">📅 ' + task.date + '</span>' : '') +
+              '<button class="task-edit-btn" onclick="editTask(' + task.id + ')">✏️ Edit</button>' +
+              '<button class="task-del-btn"  onclick="deleteTask(' + task.id + ')">🗑 Delete</button>' +
+            '</div>';
+
+          // Drag events
+          card.addEventListener('dragstart', function() {
+            draggingId = task.id;
+            setTimeout(function(){ card.style.opacity = '0.4'; }, 0);
+          });
+          card.addEventListener('dragend', function() {
+            card.style.opacity = '1';
+          });
+
+          list.appendChild(card);
+        });
+      });
+
+      // Update analytics numbers
+      updateStats();
+    }
+
+    // Update the numbers in the analytics section
+    function updateStats() {
+      const total = tasks.length;
+      const done  = tasks.filter(function(t){ return t.status === 'done'; }).length;
+      const prog  = tasks.filter(function(t){ return t.status === 'inprogress'; }).length;
+      const todo  = tasks.filter(function(t){ return t.status === 'todo'; }).length;
+
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statTodo').textContent  = todo;
+      document.getElementById('statProg').textContent  = prog;
+      document.getElementById('statDone').textContent  = done;
+
+      // Progress bar percentage
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+      document.getElementById('progressFill').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = 'Completion: ' + pct + '%';
+    }
+
+
+    // ── 3. ADD / EDIT / DELETE TASKS ─────────────────────
+
+    // Open the modal to add a new task
+    function openModal() {
+      editingId = null;
+      document.getElementById('modalHeading').textContent = 'Add New Task';
+      document.getElementById('inputTitle
